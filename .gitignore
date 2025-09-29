@@ -1,0 +1,6 @@
+.env
+node_modules
+public/reporting.csv
+public/reporting.json
+public/enrollments.json
+public/products/*.json

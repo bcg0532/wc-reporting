@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>SpiritRock Reporting Tool</title>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  </head>
+  <body>
+    <main class="d-flex" x-data="main">
+      <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark vh-100 overflow-auto col-3">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+          <span class="fs-4">SpiritRock</span>
+        </a>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+          <template x-for="product in products">
+            <li class="nav-item" @click="showReporting(product['Product ID'])">
+              <a href="javascript:void(0)" class="nav-link text-white" x-text="product.Title"></a>
+            </li>
+          </template>
+        </ul>
+      </div>
+      <div class="col-9">
+        <form class="d-flex align-items-center p-3 pb-1" @submit.prevent="createReporting">
+          Start <input class="form-control ms-3 me-3" type="date" name="start" :value="settings.start">
+          End <input class="form-control ms-3 me-3" type="date" name="end" :value="settings.end">
+          <button class="btn btn-primary" type="submit" :disabled="settings.status === 'processing'">Submit</button>
+        </form>
+        <template x-if="settings.status !== 'processing'">
+          <p class="ps-3 mb-0">The latest reporting has been created at <span x-text="settings.created"></span></p>
+        </template>
+        <div class="p-3">
+          <template x-if="settings.status === 'processing'">
+            <p>
+              Creating a new reporting. This will take a few miniutes...
+            </p>
+          </template>
+          <template x-if="settings.status !== 'processing'">
+            <div>
+              <template x-if="reporting">
+                <div>
+                  <h1 x-text="reporting.Title" class="fs-3 mb-0"></h1>
+                  <div class="d-flex flex-wrap mt-4">
+                    <div class="card text-bg-light me-2 mt-2" style="width: 200px;">
+                      <div class="card-header">Gross Revenue</div>
+                      <div class="card-body">
+                        <h5 class="card-title" x-text="reporting['Gross Revenue']"></h5>
+                      </div>
+                    </div>
+                    <div class="card text-bg-light me-2 mt-2" style="width: 200px;">
+                      <div class="card-header">Expected Revenue</div>
+                      <div class="card-body">
+                        <h5 class="card-title" x-text="reporting['Expected Revenue']"></h5>
+                      </div>
+                    </div>
+                    <div class="card text-bg-light me-2 mt-2" style="width: 200px;">
+                      <div class="card-header">Net Revenue</div>
+                      <div class="card-body">
+                        <h5 class="card-title" x-text="reporting['Net Revenue']"></h5>
+                      </div>
+                    </div>
+                    <div class="card text-bg-light me-2 mt-2" style="width: 200px;">
+                      <div class="card-header">Profit</div>
+                      <div class="card-body">
+                        <h5 class="card-title" x-text="reporting['Profit']"></h5>
+                      </div>
+                    </div>
+                    <div class="card text-bg-light me-2 mt-2" style="width: 200px;">
+                      <div class="card-header">Total Refunds</div>
+                      <div class="card-body">
+                        <h5 class="card-title" x-text="reporting['Total Refunds']"></h5>
+                      </div>
+                    </div>
+                    <div class="card text-bg-light me-2 mt-2" style="width: 200px;">
+                      <div class="card-header">Total Stripe Fee</div>
+                      <div class="card-body">
+                        <h5 class="card-title" x-text="reporting['Total Stripe Fee']"></h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+              <template x-if="!reporting">
+                <div>
+                  <div class="card text-bg-light" style="width: 200px;">
+                    <div class="card-header">Total Enrollments</div>
+                    <div class="card-body">
+                      <h5 class="card-title" x-text="enrollments.length"></h5>
+                    </div>
+                  </div>
+                  <a class="btn btn-primary btn-sm mt-3" href="/api/reporting/download">Download CSV</a>
+                </div>
+              </template>
+            </div>
+          </template>
+        </div>
+      </div>
+    </main>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
