@@ -43,6 +43,9 @@ document.addEventListener('alpine:init', () => {
               gravity: "bottom",
               position: "right",
             }).showToast();
+
+            this.reporting = null;
+            this.loadEnrollments();
           }
         }, 1000 * 60);
       }
